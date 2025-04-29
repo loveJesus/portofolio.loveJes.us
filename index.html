@@ -443,6 +443,108 @@
                     grid-template-columns: 1fr;
                 }
             }
+            p#about_me_chirho {
+                text-align: justify;
+            }
+            /* About Section Enhanced Layout and Effect Styles */
+            #about_chirho .container_chirho {
+                display: flex; /* Use flexbox for layout */
+                flex-wrap: wrap; /* Allow wrapping on smaller screens */
+                gap: 30px; /* Space between text and effect */
+                align-items: center; /* Vertically align items in the flex container */
+            }
+
+            .about-text-chirho {
+                flex: 2; /* Text takes up more space (approx 2/3) */
+                min-width: 300px; /* Ensure text block doesn't get too narrow */
+            }
+
+            #about_me_chirho {
+                text-align: justify; /* Keep the justified text */
+                margin-bottom: 0; /* Remove default bottom margin if not needed */
+            }
+
+            .about-effect-container-chirho {
+                flex: 1; /* Effect takes up less space (approx 1/3) */
+                display: flex;
+                justify-content: center; /* Center the effect horizontally */
+                align-items: center; /* Center the effect vertically */
+                min-height: 150px; /* Give the container some height */
+                position: relative; /* Needed for absolute positioning of the heart */
+            }
+
+            .cross-heart-wrapper-chirho {
+                position: relative; /* Container for positioning heart over cross */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .latin-cross-chirho {
+                font-size: 11rem; /* Size of the cross */
+                color: #555; /* Color of the cross */
+                line-height: 1; /* Adjust line height for better positioning */
+                text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+            }
+
+            .pulsing-heart-chirho {
+                font-size: 5.5rem; /* Size of the heart */
+                color: #ff4d6d; /* A heart color */
+                position: absolute; /* Position over the cross */
+                top: 15%; /* Adjust vertical position relative to wrapper */
+                left: 50%; /* Center horizontally relative to wrapper */
+                transform: translateX(
+                    -50%
+                ); /* Fine-tune horizontal centering */
+                animation: pulseHeartChirho 1.5s infinite ease-in-out;
+                text-shadow: 0 0 8px rgba(0, 0, 0, 0.4); /* Optional subtle shadow */
+            }
+
+            /* Pulsing Animation */
+            @keyframes pulseHeartChirho {
+                0% {
+                    transform: translateX(-50%) scale(0.95);
+                    opacity: 0.8;
+                }
+                50% {
+                    transform: translateX(-50%) scale(1.05);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateX(-50%) scale(0.95);
+                    opacity: 0.8;
+                }
+            }
+
+            /* Responsive: Stack below on smaller screens */
+            @media (max-width: 768px) {
+                #about_chirho .container_chirho {
+                    flex-direction: column; /* Stack elements vertically */
+                    align-items: center; /* Center items when stacked */
+                }
+
+                .about-text-chirho {
+                    flex-basis: 100%; /* Text takes full width */
+                    text-align: center; /* Center heading */
+                }
+                #about_me_chirho {
+                    text-align: justify; /* Keep paragraph justified */
+                    margin-bottom: 30px; /* Add space below text */
+                }
+
+                .about-effect-container-chirho {
+                    flex-basis: 100%; /* Effect takes full width */
+                    min-height: 120px; /* Adjust height if needed */
+                }
+                /* Optional: Adjust icon sizes for mobile if needed */
+                .latin-cross-chirho {
+                    /* font-size: 4rem; */
+                }
+                .pulsing-heart-chirho {
+                    /* font-size: 2rem; */
+                    top: 22%; /* Re-adjust vertical position for smaller cross */
+                }
+            }
         </style>
     </head>
     <body>
@@ -477,99 +579,35 @@
 
         <section id="about_chirho">
             <div class="container_chirho">
-                <h2>About Me</h2>
-                <p>
-                    Hi, I'm L.J. short for Love Jesus, there is a story behind
-                    that. By God's grace I've been an experienced and versatile
-                    software engineer currently based in Florida. I'm passionate
-                    about building robust, efficient, and secure applications
-                    that solve real-world problems. With a strong foundation in
-                    backend systems (Python/Django, Rust, Ruby on Rails and
-                    Elixir/Phoenix) i've worked on AI integration, cloud
-                    architecture (AWS, Google Cloud), and DevOps practices I
-                    enjoy tackling complex technical challenges. My background
-                    includes modernizing large-scale systems for major
-                    corporations, 3d video game engine creation, working towards
-                    robust security, developing innovative AI solutions,
-                    creating mobile applications, and building websites, tools
-                    and ecommerce solutions for various organizations. I'm
-                    seeking challenging freelance or contract opportunities
-                    where I can leverage my skills locally or remotely to serve
-                    others and to be a part of bringing the good news of Jesus
-                    Christ to the nations.
-                </p>
-            </div>
-        </section>
+                <div class="about-text-chirho">
+                    <h2>About Me</h2>
+                    <p id="about_me_chirho">
+                        Hi, I'm L.J. short for Love Jesus, there is a story
+                        behind that. By God's grace I've been an experienced and
+                        versatile software engineer currently based in Florida.
+                        I'm passionate about building robust, efficient, and
+                        secure applications that solve real-world problems. With
+                        a strong foundation in backend systems (Python/Django,
+                        Rust, Ruby on Rails and Elixir/Phoenix) i've worked on
+                        AI integration, cloud architecture (AWS, Google Cloud),
+                        and DevOps practices I enjoy tackling complex technical
+                        challenges. My background includes modernizing
+                        large-scale systems for major corporations, 3d video
+                        game engine creation, working towards robust security,
+                        developing innovative AI solutions, creating mobile
+                        applications, and building websites, tools and ecommerce
+                        solutions for various organizations. I'm seeking
+                        challenging freelance or contract opportunities where I
+                        can leverage my skills locally or remotely to serve
+                        others and to be a part of bringing the good news of
+                        Jesus Christ to the nations.
+                    </p>
+                </div>
 
-        <section id="skills_chirho">
-            <div class="container_chirho">
-                <h2>Technical Skills</h2>
-                <div class="skills-grid_chirho">
-                    <div class="skill-category_chirho">
-                        <h3>
-                            <i class="fas fa-code"></i> Languages & Frameworks
-                        </h3>
-                        <ul>
-                            <li>Python (Django, Flask)</li>
-                            <li>Rust</li>
-                            <li>Ruby on Rails</li>
-                            <li>Elixir/Phoenix</li>
-                            <li>C# (Unity3D)</li>
-                            <li>JavaScript (Node.js), Php</li>
-                            <li>Swift, Kotlin (Mobile)</li>
-                            <li>Java, C, Assembly, OCaml, Shell</li>
-                        </ul>
-                    </div>
-                    <div class="skill-category_chirho">
-                        <h3><i class="fas fa-cloud"></i> Cloud &amp; DevOps</h3>
-                        <ul>
-                            <li>AWS (EC2, ECS, S3, Lambda)</li>
-                            <li>Google App Engine</li>
-                            <li>Cloudflare (API/Workers)</li>
-                            <li>Docker, KVM, BHyve, OBS Studio</li>
-                            <li>Jenkins, CI/CD</li>
-                            <li>Server Admin (OpenBSD, Linux)</li>
-                            <li>Networking (Bind, PowerDNS)</li>
-                        </ul>
-                    </div>
-                    <div class="skill-category_chirho">
-                        <h3>
-                            <i class="fas fa-database"></i> Databases &amp;
-                            Storage
-                        </h3>
-                        <ul>
-                            <li>MariaDB Galera</li>
-                            <li>PostgreSQL</li>
-                            <li>SQLite</li>
-                            <li>Redis</li>
-                            <li>Couchbase</li>
-                            <li>SQL Server</li>
-                        </ul>
-                    </div>
-                    <div class="skill-category_chirho">
-                        <h3>
-                            <i class="fas fa-brain"></i>
-                            <i
-                                class="fas fa-cubes"
-                                style="margin-left: 5px"
-                            ></i>
-                            AI, Media, Graphics & Tools
-                        </h3>
-                        <ul>
-                            <li>AI Document Verification</li>
-                            <li>Realtime AI Agents</li>
-                            <li>Generative Media Integration</li>
-                            <li>Security (OWASP)</li>
-                            <li>
-                                Ableton live, Max, Premiere, Final Cut, After
-                                Effects
-                            </li>
-                            <li>Unity3D, C#</li>
-                            <li>Blender3D, 3D Animation</li>
-                            <li>WebGL/OpenGL Shaders</li>
-                            <li>Git, Grafana, WordPress</li>
-                            <li>Stripe/PayPal Integration</li>
-                        </ul>
+                <div class="about-effect-container-chirho">
+                    <div class="cross-heart-wrapper-chirho">
+                        <i class="fas fa-cross latin-cross-chirho"></i>
+                        <i class="fas fa-heart pulsing-heart-chirho"></i>
                     </div>
                 </div>
             </div>
@@ -703,6 +741,80 @@
                                 >
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills_chirho">
+            <div class="container_chirho">
+                <h2>Technical Skills</h2>
+                <div class="skills-grid_chirho">
+                    <div class="skill-category_chirho">
+                        <h3>
+                            <i class="fas fa-code"></i> Languages & Frameworks
+                        </h3>
+                        <ul>
+                            <li>Python (Django, Flask)</li>
+                            <li>Rust</li>
+                            <li>Ruby on Rails</li>
+                            <li>Elixir/Phoenix</li>
+                            <li>C# (Unity3D)</li>
+                            <li>JavaScript (Node.js), Php</li>
+                            <li>Swift, Kotlin (Mobile)</li>
+                            <li>Java, C, Assembly, OCaml, Shell</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category_chirho">
+                        <h3><i class="fas fa-cloud"></i> Cloud &amp; DevOps</h3>
+                        <ul>
+                            <li>AWS (EC2, ECS, S3, Lambda)</li>
+                            <li>Google App Engine</li>
+                            <li>Cloudflare (API/Workers)</li>
+                            <li>Docker, KVM, BHyve, OBS Studio</li>
+                            <li>Jenkins, CI/CD</li>
+                            <li>Server Admin (OpenBSD, Linux)</li>
+                            <li>Networking (Bind, PowerDNS)</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category_chirho">
+                        <h3>
+                            <i class="fas fa-database"></i> Databases &amp;
+                            Storage
+                        </h3>
+                        <ul>
+                            <li>MariaDB Galera</li>
+                            <li>PostgreSQL</li>
+                            <li>SQLite</li>
+                            <li>Redis</li>
+                            <li>Couchbase</li>
+                            <li>SQL Server</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category_chirho">
+                        <h3>
+                            <i class="fas fa-brain"></i>
+                            <i
+                                class="fas fa-cubes"
+                                style="margin-left: 5px"
+                            ></i>
+                            AI, Media, Graphics & Tools
+                        </h3>
+                        <ul>
+                            <li>AI Document Verification</li>
+                            <li>Realtime AI Agents</li>
+                            <li>Generative Media Integration</li>
+                            <li>Security (OWASP)</li>
+                            <li>
+                                Ableton live, Max, Premiere, Final Cut, After
+                                Effects
+                            </li>
+                            <li>Unity3D, C#</li>
+                            <li>Blender3D, 3D Animation</li>
+                            <li>WebGL/OpenGL Shaders</li>
+                            <li>Git, Grafana, WordPress</li>
+                            <li>Stripe/PayPal Integration</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -992,10 +1104,12 @@
 
                              // Orbiting Small Spheres
                             float angle_step_sphere_chirho = 2.0 * PI_CHIRHO / float(NUM_SMALL_SPHERES_CHIRHO);
-                            float orbit_radius_sphere_chirho = 3.0;
+                            float orbit_radius_sphere_base_chirho = 2.0;
                             float small_sphere_radius_chirho = 0.3;
 
                             for (int i_chirho = 0; i_chirho < NUM_SMALL_SPHERES_CHIRHO; i_chirho++) {
+                                float orbit_radius_sphere_chirho = orbit_radius_sphere_base_chirho + float(i_chirho) * 0.2; // Increase radius with index
+
                                 // Vary rotation direction and speed based on index
                                 float time_offset_chirho = float(i_chirho) * 0.5;
                                 float speed_multiplier_chirho = (mod(float(i_chirho), 2.0) == 0.0) ? -0.5 : 0.6; // Alternate direction
