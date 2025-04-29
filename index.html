@@ -577,7 +577,7 @@
             </div>
         </section>
 
-        <section id="about_chirho">
+        <section id="about_chirho" class="animated-separator-chirho">
             <div class="container_chirho">
                 <div class="about-text-chirho">
                     <h2>About Me</h2>
@@ -612,8 +612,410 @@
                 </div>
             </div>
         </section>
+        <style>
+            /* === Global HR Styles (Chirho Suffix Applied) === */
+            hr {
+                /* Target ALL hr elements */
+                border: none;
+                height: 30px;
+                /* Use a CSS variable for the gradient, JS will update this */
+                /* Default color set here, JS overrides when visible */
+                --hr-dynamic-color-chirho: linear-gradient(
+                    to right,
+                    transparent,
+                    #ccc,
+                    transparent
+                );
+                background: var(--hr-dynamic-color-chirho);
+                width: 0%; /* Start hidden */
+                max-width: 80%; /* Or adjust as needed */
+                margin: 40px auto;
+                opacity: 0;
+                /* Animate width and opacity changes */
+                transition:
+                    width 1.5s ease-out,
+                    opacity 1s ease-out;
+                /* Note: Background color transition is handled dynamically via JS update */
+            }
 
-        <section id="projects_chirho">
+            /* Class added by JS when hr is visible (Chirho Suffix Applied) */
+            hr.is-visible-chirho {
+                width: 80%; /* Expand width */
+                opacity: 1; /* Become visible */
+            }
+
+            /* === LinkedIn Promo Section Styles - Updated (Chirho Suffix Applied) === */
+            #linkedin-promo-chirho {
+                background-color: #e9e9e9;
+                padding: 25px 0;
+                overflow: hidden; /* Added to contain floats if flex fails somehow */
+            }
+
+            #linkedin-promo-chirho .container_chirho {
+                max-width: 950px;
+                margin: 0 auto;
+                padding: 0 20px;
+                display: flex;
+                /* Ensure items stay on one line on larger screens */
+                flex-wrap: nowrap;
+                /* Space between items */
+                justify-content: space-between;
+                /* Center items vertically */
+                align-items: center;
+                /* Gap between items */
+                gap: 25px;
+            }
+
+            /* Button styles - order: 1 makes it appear first (left) */
+            .linkedin-button-chirho {
+                order: 1; /* Explicitly first */
+                flex-shrink: 0; /* Prevent button from shrinking */
+                /* Other button styles remain the same */
+                display: inline-block;
+                background-color: #0077b5;
+                color: #fff;
+                padding: 10px 20px;
+                border-radius: 5px;
+                text-decoration: none;
+                font-weight: bold;
+                transition: background-color 0.3s ease;
+                font-size: 0.95rem;
+                white-space: nowrap;
+            }
+            .linkedin-button-chirho:hover {
+                background-color: #005582;
+            }
+            .linkedin-button-chirho i {
+                margin-right: 8px;
+            }
+
+            /* Text styles - order: 2 makes it appear second (right) */
+            #linkedin-promo-chirho .promo-text-chirho {
+                order: 2; /* Explicitly second */
+                flex-grow: 1; /* Allow text to take up remaining space */
+                flex-shrink: 1; /* Allow text to shrink if needed, but button won't */
+                min-width: 100px; /* Prevent text from becoming too small */
+                /* Other text styles remain the same */
+                font-size: 1.05rem;
+                color: #333;
+                margin: 0;
+                text-align: left;
+            }
+
+            /* Responsive: Allow wrapping only on smaller screens */
+            @media (max-width: 700px) {
+                /* Adjust breakpoint as needed */
+                #linkedin-promo-chirho .container_chirho {
+                    flex-wrap: wrap; /* Allow wrapping */
+                    justify-content: center;
+                    gap: 15px;
+                }
+                /* On wrap, button goes below text */
+                .linkedin-button-chirho {
+                    order: 2; /* Button second */
+                }
+                #linkedin-promo-chirho .promo-text-chirho {
+                    order: 1; /* Text first */
+                    text-align: center;
+                    flex-basis: 100%; /* Takes full width */
+                    flex-grow: 0; /* Reset grow */
+                    margin-bottom: 15px; /* Add space below text */
+                }
+            }
+        </style>
+
+        <section id="linkedin-promo-chirho" class="animated-separator-chirho">
+            <div class="container_chirho">
+                <a
+                    href="https://linkedin.com/in/loveJesus"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="linkedin-button-chirho"
+                >
+                    <i class="fab fa-linkedin"></i> View on LinkedIn
+                </a>
+                <p class="promo-text-chirho">
+                    For a deeper dive into my 20+ years of experience and
+                    project history, please visit my LinkedIn profile.
+                </p>
+            </div>
+        </section>
+
+        <style>
+            /* === Section Styling Updates === */
+            /* Remove the original border from sections that will get the animated line */
+            section:not(#hero_chirho) {
+                /* border-bottom: 1px solid #ddd; */ /* REMOVED */
+                padding: 80px 0;
+                background-color: #f9f9f9; /* Keep other styles */
+                position: relative; /* Needed for absolute positioning of ::after */
+                overflow: hidden; /* Prevent pseudo-element overflow issues */
+            }
+            section:last-of-type {
+                /* border-bottom: none; */ /* No border needed */
+            }
+            /* Special case for linkedin promo if using different padding */
+            #linkedin-promo-chirho {
+                /* border-bottom: none; */ /* REMOVED border */
+                position: relative;
+                overflow: hidden;
+            }
+
+            /* === Animated Separator Line using Pseudo-element (Chirho Suffix Applied) === */
+            /* Add the class 'animated-separator-chirho' to sections needing the line below */
+            section.animated-separator-chirho::after {
+                content: "";
+                position: absolute;
+                bottom: 0; /* Position at the bottom of the section */
+                left: 50%; /* Start animation from center */
+                transform: translateX(-50%);
+                height: 3px; /* Thickness */
+                /* Use the CSS variable for the gradient */
+                --hr-dynamic-color-chirho: linear-gradient(
+                    to right,
+                    transparent,
+                    #34a,
+                    transparent
+                ); /* Default */
+                background: var(--hr-dynamic-color-chirho);
+                width: 0%; /* Start hidden */
+                max-width: 80%; /* Max width */
+                opacity: 0;
+                /* Transition for width and opacity */
+                transition:
+                    width 2.5s ease-out,
+                    opacity 2s ease-out;
+            }
+
+            /* State when the SECTION is visible (add 'is-visible-chirho' class to section via JS) */
+            section.animated-separator-chirho.is-visible-chirho::after {
+                width: 80%; /* Animate pseudo-element width */
+                opacity: 1; /* Animate pseudo-element opacity */
+            }
+
+            /* === LinkedIn Promo Section Styles - Unchanged Layout === */
+            #linkedin-promo-chirho {
+                background-color: #e9e9e9;
+                padding: 25px 0;
+            }
+            #linkedin-promo-chirho .container_chirho {
+                max-width: 950px;
+                margin: 0 auto;
+                padding: 0 20px;
+                display: flex;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+                align-items: center;
+                gap: 25px;
+            }
+            .linkedin-button-chirho {
+                order: 1;
+                flex-shrink: 0;
+                display: inline-block;
+                background-color: #0077b5;
+                color: #fff;
+                padding: 10px 20px;
+                border-radius: 5px;
+                text-decoration: none;
+                font-weight: bold;
+                transition: background-color 0.3s ease;
+                font-size: 0.95rem;
+                white-space: nowrap;
+            }
+            .linkedin-button-chirho:hover {
+                background-color: #005582;
+            }
+            .linkedin-button-chirho i {
+                margin-right: 8px;
+            }
+            #linkedin-promo-chirho .promo-text-chirho {
+                order: 2;
+                flex-grow: 1;
+                flex-shrink: 1;
+                min-width: 100px;
+                font-size: 1.05rem;
+                color: #333;
+                margin: 0;
+                text-align: left;
+            }
+            @media (max-width: 700px) {
+                #linkedin-promo-chirho .container_chirho {
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 15px;
+                }
+                .linkedin-button-chirho {
+                    order: 2;
+                }
+                #linkedin-promo-chirho .promo-text-chirho {
+                    order: 1;
+                    text-align: center;
+                    flex-basis: 100%;
+                    flex-grow: 0;
+                    margin-bottom: 15px;
+                }
+            }
+        </style>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                // Select the SECTIONS with the class
+                const animatedSectionsChirho = document.querySelectorAll(
+                    "section.animated-separator-chirho",
+                );
+                // Set to keep track of sections whose separators are currently visible/active
+                const visibleSectionsChirho = new Set();
+
+                // --- Part 1: Intersection Observer for Section Visibility ---
+                const visibilityObserverOptionsChirho = {
+                    root: null,
+                    rootMargin: "0px",
+                    threshold: 0.1, // Trigger when 10% of the SECTION is visible
+                };
+
+                // Callback function for the visibility observer
+                const visibilityCallbackChirho = (entries, observer) => {
+                    entries.forEach((entry) => {
+                        const sectionElement = entry.target;
+                        if (entry.isIntersecting) {
+                            // Section is entering the viewport
+                            sectionElement.classList.add("is-visible-chirho");
+                            visibleSectionsChirho.add(sectionElement); // Track section
+                            // Update color immediately when visible based on current position
+                            updateSingleSeparatorColorChirho(sectionElement);
+                        } else {
+                            // Section is leaving the viewport
+                            sectionElement.classList.remove(
+                                "is-visible-chirho",
+                            );
+                            visibleSectionsChirho.delete(sectionElement); // Stop tracking
+                            // Reset color (to grey) using the custom property on the section when it leaves view
+                            // Important: Use a distinct default gradient string here
+                            sectionElement.style.setProperty(
+                                "--hr-dynamic-color-chirho",
+                                "linear-gradient(to right, transparent, #ccc, transparent)",
+                            );
+                        }
+                    });
+                };
+
+                // Create and start the visibility observer
+                const visibilityObserverChirho = new IntersectionObserver(
+                    visibilityCallbackChirho,
+                    visibilityObserverOptionsChirho,
+                );
+                animatedSectionsChirho.forEach((section) =>
+                    visibilityObserverChirho.observe(section),
+                );
+
+                // --- Part 2: Scroll Listener Function for Dynamic Color ---
+                // This function updates the --hr-dynamic-color-chirho property on the SECTION
+                const updateSingleSeparatorColorChirho = (sectionElement) => {
+                    const viewportHeightChirho = window.innerHeight;
+                    // Define the scroll range (bottom of viewport up to 75% mark)
+                    const colorChangeStartChirho = viewportHeightChirho; // Bottom edge of viewport
+                    const colorChangeEndChirho = viewportHeightChirho * 0.25; // 75% up from bottom (25% from top)
+
+                    const rectChirho = sectionElement.getBoundingClientRect();
+                    // Use the bottom edge of the section (where the ::after pseudo-element is)
+                    const separatorTopChirho = rectChirho.bottom;
+
+                    let factorChirho = 0; // Interpolation factor (0 = bottom/grey, 1 = top/blue)
+
+                    // Calculate factor based on position within the active range
+                    if (
+                        separatorTopChirho < colorChangeStartChirho &&
+                        separatorTopChirho > colorChangeEndChirho
+                    ) {
+                        // Linear mapping: as separatorTopChirho decreases (moves up), factor increases towards 1
+                        factorChirho =
+                            1 -
+                            (separatorTopChirho - colorChangeEndChirho) /
+                                (colorChangeStartChirho - colorChangeEndChirho);
+                    } else if (separatorTopChirho <= colorChangeEndChirho) {
+                        // If separator is above the 75% mark, it's fully blue (factor = 1)
+                        factorChirho = 1;
+                    } else {
+                        // If separator is below the range (at the very bottom), factor is 0 (fully grey)
+                        factorChirho = 0;
+                    }
+                    // Clamp factor just in case
+                    factorChirho = Math.max(0, Math.min(1, factorChirho));
+
+                    // *** REVERSED Color Interpolation ***
+                    // Interpolate between Blue (#00aaff -> 0, 170, 255) and Grey (#ccc -> 204, 204, 204)
+                    // factor = 1 means fully blue, factor = 0 means fully grey.
+                    const greyValChirho = 204;
+                    const blueRChirho = 0;
+                    const blueGChirho = 170;
+                    const blueBChirho = 255;
+
+                    // When factor is 1, we want blue. When factor is 0, we want grey.
+                    const currentRChirho = Math.round(
+                        greyValChirho +
+                            (blueRChirho - greyValChirho) * factorChirho,
+                    );
+                    const currentGChirho = Math.round(
+                        greyValChirho +
+                            (blueGChirho - greyValChirho) * factorChirho,
+                    );
+                    const currentBChirho = Math.round(
+                        greyValChirho +
+                            (blueBChirho - greyValChirho) * factorChirho,
+                    );
+
+                    const centerColorChirho = `rgb(${currentRChirho}, ${currentGChirho}, ${currentBChirho})`;
+                    const newGradientChirho = `linear-gradient(to right, transparent, ${centerColorChirho}, transparent)`;
+
+                    // Update the CSS custom property ON THE SECTION ELEMENT
+                    window.requestAnimationFrame(() => {
+                        sectionElement.style.setProperty(
+                            "--hr-dynamic-color-chirho",
+                            newGradientChirho,
+                        );
+                    });
+                    // console.log(`Section Bottom: ${separatorTopChirho.toFixed(0)}, Factor: ${factorChirho.toFixed(2)}, Color: ${centerColorChirho}`); // Debugging
+                };
+
+                // Function to update colors for all currently visible section separators
+                const updateAllVisibleSeparatorColorsChirho = () => {
+                    // Create a temporary array from the Set to avoid modifying while iterating if needed
+                    const sectionsToUpdate = Array.from(visibleSectionsChirho);
+                    sectionsToUpdate.forEach((section) => {
+                        // Check if the element is still in the DOM (optional safety check)
+                        if (document.body.contains(section)) {
+                            updateSingleSeparatorColorChirho(section);
+                        }
+                    });
+                };
+
+                // Attach the listener to the scroll event
+                window.addEventListener(
+                    "scroll",
+                    updateAllVisibleSeparatorColorsChirho,
+                    { passive: true },
+                );
+
+                // Initial call to set colors for any sections already visible on load
+                // Ensure the DOM is fully ready AND styles potentially computed
+                requestAnimationFrame(() => {
+                    animatedSectionsChirho.forEach((section) => {
+                        // Check if section is already intersecting on load
+                        const rect = section.getBoundingClientRect();
+                        if (rect.top < window.innerHeight && rect.bottom > 0) {
+                            if (!visibleSectionsChirho.has(section)) {
+                                // Add if not already added by observer race condition
+                                section.classList.add("is-visible-chirho");
+                                visibleSectionsChirho.add(section);
+                            }
+                            updateSingleSeparatorColorChirho(section);
+                        }
+                    });
+                });
+            }); // End DOMContentLoaded
+        </script>
+
+        <section id="projects_chirho" class="animated-separator-chirho">
             <div class="container_chirho">
                 <h2>Featured Projects</h2>
                 <div class="projects-grid_chirho">
@@ -746,7 +1148,7 @@
             </div>
         </section>
 
-        <section id="skills_chirho">
+        <section id="skills_chirho" class="animated-separator-chirho">
             <div class="container_chirho">
                 <h2>Technical Skills</h2>
                 <div class="skills-grid_chirho">
@@ -820,7 +1222,7 @@
             </div>
         </section>
 
-        <section id="services_chirho">
+        <section id="services_chirho" class="animated-separator-chirho">
             <div class="container_chirho">
                 <h2>Offered Services</h2>
                 <div class="services-grid_chirho">
@@ -871,7 +1273,7 @@
                                 Assistance with setting up computer systems and
                                 basic security configurations.
                             </p>
-                            <p class="price_chirho">Starting: $45-65/hr</p>
+                            <p class="price_chirho">Starting: $30-65/hr</p>
                         </div>
                         <div class="service-item_chirho">
                             <h4>Computer Repair Assistance</h4>
@@ -957,7 +1359,7 @@
             </div>
         </section>
 
-        <section id="contact_chirho">
+        <section id="contact_chirho" class="animated-separator-chirho">
             <div class="container_chirho">
                 <h2>Contact Me</h2>
                 <p>
