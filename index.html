@@ -1,0 +1,1064 @@
+<!doctype html>
+<!-- For God so loved the world that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life. John 3:16 -->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>L.J. (Brian Cowan) - Portfolio</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+            integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+        <style>
+            /* Basic Reset & Defaults */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                scroll-behavior: smooth;
+            }
+
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    Helvetica, Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background-color: #f9f9f9;
+                overflow-x: hidden;
+            }
+
+            .container_chirho {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            /* Navigation */
+            nav {
+                background-color: #333;
+                color: #fff;
+                padding: 1rem 0;
+                position: fixed;
+                top: 0;
+                width: 100%;
+                z-index: 1000;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            }
+
+            nav .container_chirho {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            nav .logo_chirho {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #fff;
+                text-decoration: none;
+            }
+
+            nav ul {
+                list-style: none;
+                display: flex;
+            }
+
+            nav ul li {
+                margin-left: 20px;
+            }
+
+            nav ul li a {
+                color: #fff;
+                text-decoration: none;
+                font-weight: bold;
+                transition: color 0.3s ease;
+            }
+
+            nav ul li a:hover {
+                color: #00aaff;
+            }
+
+            /* Hero Section */
+            #hero_chirho {
+                background-color: #222;
+                color: #fff;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding-top: 60px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            #hero-content_chirho {
+                position: relative;
+                z-index: 1;
+            }
+
+            #hero_chirho h1 {
+                font-size: 3rem;
+                margin-bottom: 0.5rem;
+            }
+
+            #hero_chirho p {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            #hero_chirho .cta-button_chirho {
+                display: inline-block;
+                background-color: #00aaff;
+                color: #fff;
+                padding: 12px 25px;
+                border-radius: 5px;
+                text-decoration: none;
+                font-weight: bold;
+                transition: background-color 0.3s ease;
+            }
+
+            #hero_chirho .cta-button_chirho:hover {
+                background-color: #0088cc;
+            }
+
+            /* Canvas for Three.js */
+            #bg-canvas_chirho {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 0;
+            }
+
+            /* Section Styling */
+            section:not(#hero_chirho) {
+                padding: 80px 0;
+                border-bottom: 1px solid #ddd;
+                background-color: #f9f9f9;
+                position: relative;
+                z-index: 1;
+            }
+            section:last-of-type {
+                border-bottom: none;
+            }
+
+            section h2 {
+                text-align: center;
+                font-size: 2.5rem;
+                margin-bottom: 40px;
+                color: #333;
+            }
+
+            /* About Section */
+            #about_chirho p {
+                max-width: 800px;
+                margin: 0 auto;
+                text-align: center;
+                font-size: 1.1rem;
+            }
+
+            /* Skills Section */
+            #skills_chirho .skills-grid_chirho {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 25px;
+                margin-top: 20px;
+            }
+
+            #skills_chirho .skill-category_chirho {
+                background-color: #fff;
+                padding: 25px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            #skills_chirho .skill-category_chirho h3 {
+                font-size: 1.4rem;
+                color: #00aaff;
+                margin-bottom: 15px;
+                border-bottom: 2px solid #eee;
+                padding-bottom: 5px;
+            }
+            #skills_chirho .skill-category_chirho h3 i {
+                margin-right: 8px;
+            }
+
+            #skills_chirho ul {
+                list-style: none;
+            }
+            #skills_chirho li {
+                margin-bottom: 8px;
+                font-size: 1rem;
+            }
+            #skills_chirho li::before {
+                content: "•";
+                color: #00aaff;
+                font-weight: bold;
+                display: inline-block;
+                width: 1em;
+                margin-left: -1em;
+            }
+
+            /* Projects Section */
+            #projects_chirho .projects-grid_chirho {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 25px;
+            }
+
+            #projects_chirho .project-card_chirho {
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                transition: transform 0.3s ease;
+                display: flex;
+                flex-direction: column;
+            }
+            #projects_chirho .project-card_chirho:hover {
+                transform: translateY(-5px);
+            }
+            #projects_chirho .project-card_chirho img {
+                width: 100%;
+                height: 180px;
+                object-fit: cover;
+                display: block;
+            }
+            #projects_chirho .project-content_chirho {
+                padding: 20px;
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            #projects_chirho h3 {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+                color: #333;
+            }
+            #projects_chirho p {
+                font-size: 0.95rem;
+                margin-bottom: 10px;
+            }
+            #projects_chirho .tech-stack_chirho {
+                font-size: 0.85rem;
+                color: #555;
+                font-style: italic;
+                margin-bottom: 10px;
+            }
+            #projects_chirho .project-links_chirho {
+                margin-top: auto;
+            }
+            #projects_chirho .project-links_chirho a {
+                display: inline-block;
+                margin-right: 10px;
+                text-decoration: none;
+                color: #00aaff;
+                font-weight: bold;
+                border: 1px solid #00aaff;
+                padding: 5px 10px;
+                border-radius: 4px;
+                transition:
+                    background-color 0.3s ease,
+                    color 0.3s ease;
+                font-size: 0.9rem;
+            }
+            #projects_chirho .project-links_chirho a:hover {
+                background-color: #00aaff;
+                color: #fff;
+            }
+            #projects_chirho .project-links_chirho a i {
+                margin-right: 5px;
+            }
+
+            /* Services Section - UPDATED GRID */
+            #services_chirho {
+                background-color: #fff;
+            }
+            #services_chirho .services-grid_chirho {
+                display: grid;
+                /* Default to 2 columns */
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+            #services_chirho .service-category_chirho {
+                background-color: #f9f9f9;
+                padding: 25px;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            }
+            #services_chirho .service-category_chirho h3 {
+                font-size: 1.5rem;
+                color: #333;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #00aaff;
+                padding-bottom: 8px;
+            }
+            #services_chirho .service-category_chirho h3 i {
+                margin-right: 8px; /* Add space for icons */
+            }
+            #services_chirho .service-item_chirho {
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+                border-bottom: 1px dashed #ccc;
+            }
+            #services_chirho .service-item_chirho:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+            #services_chirho .service-item_chirho h4 {
+                font-size: 1.1rem;
+                margin-bottom: 5px;
+                color: #555;
+            }
+            #services_chirho .service-item_chirho p {
+                font-size: 0.95rem;
+                margin-bottom: 8px;
+            }
+            #services_chirho .service-item_chirho .price_chirho {
+                font-weight: bold;
+                color: #00aaff;
+                font-size: 1rem;
+            }
+            #services_chirho .services-notes_chirho {
+                margin-top: 30px;
+                padding: 20px;
+                background-color: #e9e9e9;
+                border-radius: 8px;
+                font-size: 0.9rem;
+                text-align: center;
+                /* Span across grid columns if needed */
+                grid-column: 1 / -1; /* Make notes span full width */
+            }
+
+            /* Contact Section */
+            #contact_chirho {
+                background-color: #e9e9e9;
+            }
+            #contact_chirho p {
+                text-align: center;
+                font-size: 1.1rem;
+                margin-bottom: 20px;
+            }
+            #contact_chirho .contact-info_chirho {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+            #contact_chirho .contact-info_chirho a,
+            #contact_chirho .contact-info_chirho span {
+                color: #00aaff;
+                text-decoration: none;
+                font-weight: bold;
+                font-size: 1.2rem;
+                display: block;
+                margin-bottom: 10px;
+            }
+            #contact_chirho .contact-info_chirho a:hover {
+                text-decoration: underline;
+            }
+            #contact_chirho .contact-info_chirho a i,
+            #contact_chirho .contact-info_chirho span i {
+                margin-right: 8px;
+            }
+            #contact_chirho .contact-info_chirho p i {
+                margin-right: 8px;
+            }
+            #contact_chirho .social-links_chirho {
+                text-align: center;
+            }
+            #contact_chirho .social-links_chirho a {
+                margin: 0 15px;
+                text-decoration: none;
+                font-size: 2rem;
+                color: #333;
+                transition: color 0.3s ease;
+            }
+            #contact_chirho .social-links_chirho a:hover {
+                color: #00aaff;
+            }
+
+            /* Footer */
+            footer {
+                background-color: #333;
+                color: #fff;
+                text-align: center;
+                padding: 20px 0;
+                margin-top: 0;
+                position: relative;
+                z-index: 1;
+            }
+            footer .copyright-link_chirho {
+                color: #fff;
+                text-decoration: none;
+                font-weight: bold;
+            }
+            footer .copyright-link_chirho:hover {
+                text-decoration: underline;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 992px) {
+                /* Medium screens */
+                #skills_chirho .skills-grid_chirho,
+                #projects_chirho .projects-grid_chirho {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+                /* Services grid remains 2 columns */
+                #services_chirho .services-grid_chirho {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+            @media (max-width: 768px) {
+                /* Small screens */
+                h1 {
+                    font-size: 2.5rem;
+                }
+                #hero_chirho p {
+                    font-size: 1.2rem;
+                }
+                section h2 {
+                    font-size: 2rem;
+                }
+                nav .container_chirho {
+                    flex-direction: column;
+                }
+                nav ul {
+                    margin-top: 10px;
+                }
+                nav ul li {
+                    margin: 0 10px;
+                }
+                #skills_chirho .skills-grid_chirho,
+                #projects_chirho .projects-grid_chirho,
+                #services_chirho .services-grid_chirho {
+                    /* Make all grids 1 column */
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <div class="container_chirho">
+                <a href="#hero_chirho" class="logo_chirho">L.J.</a>
+                <ul>
+                    <li><a href="#about_chirho">About</a></li>
+                    <li><a href="#skills_chirho">Skills</a></li>
+                    <li><a href="#projects_chirho">Projects</a></li>
+                    <li><a href="#services_chirho">Services</a></li>
+                    <li><a href="#contact_chirho">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <section id="hero_chirho">
+            <canvas id="bg-canvas_chirho"></canvas>
+            <div id="hero-content_chirho">
+                <h1>L.J. (Brian Cowan)</h1>
+                <p>
+                    Senior Software Engineer | Full-Stack Developer | AI & Cloud
+                    Solutions
+                </p>
+                <p>Based in Fort Myers, Florida</p>
+                <a href="#contact_chirho" class="cta-button_chirho"
+                    >Get In Touch</a
+                >
+            </div>
+        </section>
+
+        <section id="about_chirho">
+            <div class="container_chirho">
+                <h2>About Me</h2>
+                <p>
+                    Hi, I'm L.J., an experienced and versatile software engineer
+                    based in Florida. I'm passionate about building robust,
+                    efficient, and secure applications that solve real-world
+                    problems. With a strong foundation in backend systems
+                    (Python/Django, Rust, Elixir), AI integration, cloud
+                    architecture (AWS, Google Cloud), and DevOps practices, I
+                    enjoy tackling complex technical challenges. My background
+                    includes modernizing large-scale systems for major
+                    corporations, developing innovative AI solutions, creating
+                    mobile applications, and building websites and tools for
+                    various organizations. I'm seeking challenging freelance or
+                    contract opportunities where I can leverage my skills
+                    locally or remotely to serve others and to be a part of
+                    bringing the good news of Jesus Christ to the nations.
+                </p>
+            </div>
+        </section>
+
+        <section id="skills_chirho">
+            <div class="container_chirho">
+                <h2>Technical Skills</h2>
+                <div class="skills-grid_chirho">
+                    <div class="skill-category_chirho">
+                        <h3>
+                            <i class="fas fa-code"></i> Languages & Frameworks
+                        </h3>
+                        <ul>
+                            <li>Python (Django, Flask)</li>
+                            <li>Rust</li>
+                            <li>Ruby on Rails</li>
+                            <li>Elixir/Phoenix</li>
+                            <li>PHP</li>
+                            <li>C# (Unity3D)</li>
+                            <li>JavaScript (Node.js)</li>
+                            <li>Swift, Kotlin (Mobile)</li>
+                            <li>Java, C, OCaml, Shell</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category_chirho">
+                        <h3><i class="fas fa-cloud"></i> Cloud &amp; DevOps</h3>
+                        <ul>
+                            <li>AWS (EC2, ECS, S3, Lambda)</li>
+                            <li>Google App Engine</li>
+                            <li>Cloudflare (API/Workers)</li>
+                            <li>Docker, KVM</li>
+                            <li>Jenkins, CI/CD</li>
+                            <li>Server Admin (OpenBSD, Linux)</li>
+                            <li>Networking (Bind, PowerDNS)</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category_chirho">
+                        <h3>
+                            <i class="fas fa-database"></i> Databases &amp;
+                            Storage
+                        </h3>
+                        <ul>
+                            <li>MariaDB Galera</li>
+                            <li>PostgreSQL</li>
+                            <li>MySQL</li>
+                            <li>SQLite</li>
+                            <li>Redis</li>
+                            <li>Couchbase</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category_chirho">
+                        <h3>
+                            <i class="fas fa-brain"></i>
+                            <i
+                                class="fas fa-cubes"
+                                style="margin-left: 5px"
+                            ></i>
+                            AI, Graphics & Tools
+                        </h3>
+                        <ul>
+                            <li>AI Document Verification</li>
+                            <li>Realtime AI Agents</li>
+                            <li>Generative Media Integration</li>
+                            <li>OpenAI</li>
+                            <li>Unity3D, C#</li>
+                            <li>Blender3D, 3D Animation</li>
+                            <li>WebGL/OpenGL Shaders</li>
+                            <li>Git, Grafana, WordPress</li>
+                            <li>Stripe/PayPal Integration</li>
+                            <li>Security (OWASP)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects_chirho">
+            <div class="container_chirho">
+                <h2>Featured Projects</h2>
+                <div class="projects-grid_chirho">
+                    <div class="project-card_chirho">
+                        <img
+                            src="http://lj-chirho.loveJes.us/panel1_chirho.png"
+                            alt="Backend Modernization & AI Systems"
+                        />
+                        <div class="project-content_chirho">
+                            <h3>Backend Modernization & AI Systems</h3>
+                            <p>
+                                Led modernization (PHP to Django/Rust) of a core
+                                system for thousands of companies. Developed AI
+                                document verification, real-time support agents,
+                                and generative media features.
+                            </p>
+                            <p class="tech-stack_chirho">
+                                Python, Django, Rust, AI/ML, Swift, Kotlin,
+                                MariaDB Galera
+                            </p>
+                            <div class="project-links_chirho">
+                                <a
+                                    href="https://safety-record.com"
+                                    target="_blank"
+                                    ><i class="fas fa-info-circle"></i>
+                                    Safety-Record</a
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card_chirho">
+                        <img
+                            src="http://lj-chirho.loveJes.us/panel2_chirho.png"
+                            alt="Ministry & Non-Profit Development"
+                        />
+                        <div class="project-content_chirho">
+                            <h3>Ministry & Non-Profit Development</h3>
+                            <p>
+                                Developed sites and tools for ministries like
+                                ImpactoMinistry (Rust/MySQL/Swift UI) and Open
+                                Orphanage (WordPress plugins), plus
+                                Elixir/Phoenix chat apps.
+                            </p>
+                            <p class="tech-stack_chirho">
+                                Rust, Swift UI, MySQL, Django, Wagtail, Elixir,
+                                Phoenix, WordPress
+                            </p>
+                            <div class="project-links_chirho">
+                                <a
+                                    href="https://impactoministry.com"
+                                    target="_blank"
+                                    ><i class="fas fa-external-link-alt"></i>
+                                    Impacto Ministry</a
+                                >
+                                <!-- <a
+                                    href="https://openorphanage.org"
+                                    target="_blank"
+                                    ><i class="fas fa-external-link-alt"></i>
+                                    OpenO</a
+                                > -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card_chirho">
+                        <img
+                            src="http://lj-chirho.loveJes.us/panel3_chirho.png"
+                            alt="Mobile Backends & E-commerce"
+                        />
+                        <div class="project-content_chirho">
+                            <h3>Mobile Backends & E-commerce</h3>
+                            <p>
+                                Built backends for mobile apps (Memorattic on
+                                Google App Engine, Glist donation app on
+                                Rails/MySQL) and worked on e-commerce platform
+                                Covet Fashion (HTML5 Canvas, C++, AWS).
+                            </p>
+                            <p class="tech-stack_chirho">
+                                Ruby on Rails, Google App Engine, Python, C++,
+                                AWS (S3, Lambda, ECS), MySQL
+                            </p>
+                            <div class="project-links_chirho">
+                                <a
+                                    href="https://covetfashion.com"
+                                    target="_blank"
+                                    ><i class="fas fa-external-link-alt"></i>
+                                    Covet Fashion</a
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card_chirho">
+                        <img
+                            src="http://lj-chirho.loveJes.us/panel4_chirho.png"
+                            alt="3D, Games & Open Source"
+                        />
+                        <div class="project-content_chirho">
+                            <h3>3D, Games & Open Source</h3>
+                            <p>
+                                Created Unity3D multiplayer HTML5 projects, 3D
+                                animations (Blender), live shaders, and
+                                open-source contributions like Unity3D physics
+                                tools and OBS plugin fixes.
+                            </p>
+                            <p class="tech-stack_chirho">
+                                Unity3D, C#, HTML5, Blender, Python, Shaders
+                                (WebGL/OpenGL), OBS Studio
+                            </p>
+                            <div class="project-links_chirho">
+                                <!-- <a
+                                    href="https://www.shadertoy.com/user/loveJesus"
+                                    target="_blank"
+                                    ><i class="fas fa-external-link-alt"></i>
+                                    Shader Toy</a
+                                > -->
+                                <a
+                                    href="https://youtu.be/Tsq42u2osFM?si=9UqNlzX5rO-922Fo"
+                                    target="_blank"
+                                    ><i class="fas fa-external-link-alt"></i>
+                                    YouTube video</a
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services_chirho">
+            <div class="container_chirho">
+                <h2>Offered Services</h2>
+                <div class="services-grid_chirho">
+                    <div class="service-category_chirho">
+                        <h3>
+                            <i class="fas fa-laptop-code"></i> Website & App
+                            Help
+                        </h3>
+                        <div class="service-item_chirho">
+                            <h4>Website Building/Fixing</h4>
+                            <p>
+                                Assisting with creating or repairing websites,
+                                including WordPress with WooCommerce, and
+                                others.
+                            </p>
+                            <p class="price_chirho">Starting: $35-50/hr</p>
+                        </div>
+                        <div class="service-item_chirho">
+                            <h4>Simple Mobile App Development</h4>
+                            <p>
+                                Creating basic applications for Android and
+                                iPhone.
+                            </p>
+                            <p class="price_chirho">Starting: $30-55/hr</p>
+                        </div>
+                        <div class="service-item_chirho">
+                            <h4>Ministry/Small Business Tech Consulting</h4>
+                            <p>
+                                Providing guidance and support for online
+                                technology needs.
+                            </p>
+                            <p class="price_chirho">Starting: $30-60/hr</p>
+                        </div>
+                    </div>
+
+                    <div class="service-category_chirho">
+                        <h3>
+                            <i class="fas fa-tools"></i> Computer & Tech Support
+                        </h3>
+                        <div class="service-item_chirho">
+                            <h4>General Computer Help</h4>
+                            <p>Troubleshooting common computer issues.</p>
+                            <p class="price_chirho">Starting: $30-45/hr</p>
+                        </div>
+                        <div class="service-item_chirho">
+                            <h4>System Setup & Security</h4>
+                            <p>
+                                Assistance with setting up computer systems and
+                                basic security configurations.
+                            </p>
+                            <p class="price_chirho">Starting: $45-65/hr</p>
+                        </div>
+                        <div class="service-item_chirho">
+                            <h4>Computer Repair Assistance</h4>
+                            <p>
+                                Help with diagnosing and potentially fixing
+                                computer hardware or software problems.
+                            </p>
+                            <p class="price_chirho">Starting: $30-55/hr</p>
+                        </div>
+                    </div>
+
+                    <div class="service-category_chirho">
+                        <h3>
+                            <i class="fas fa-photo-video"></i> Digital Media &
+                            Learning
+                        </h3>
+                        <div class="service-item_chirho">
+                            <h4>3D Graphics/Animation</h4>
+                            <p>
+                                Creating realtime or intermediate pre-rendered
+                                3D visuals or animations, e.g., for
+                                presentations.
+                            </p>
+                            <p class="price_chirho">Starting: $40/hr</p>
+                        </div>
+                        <div class="service-item_chirho">
+                            <h4>Sound Production (Intermediate)</h4>
+                            <p>
+                                Audio recording, editing, or basic production
+                                assistance (e.g., podcasts, simple music using
+                                Ableton Live).
+                            </p>
+                            <p class="price_chirho">Starting: $25-45/hr</p>
+                        </div>
+                        <div class="service-item_chirho">
+                            <h4>Tech Tutoring</h4>
+                            <p>
+                                Teaching computer basics, programming, software
+                                use (WordPress, etc.), or introductory tech
+                                concepts.
+                            </p>
+                            <p class="price_chirho">Starting: $25-40/hr</p>
+                        </div>
+                    </div>
+
+                    <div class="service-category_chirho">
+                        <h3>
+                            <i class="fas fa-cogs"></i> Advanced Technical
+                            Services
+                        </h3>
+                        <div class="service-item_chirho">
+                            <h4>Custom Software Development</h4>
+                            <p>
+                                Building specific software solutions based on
+                                requirements (Python, Rust, Web technologies,
+                                etc.).
+                            </p>
+                            <p class="price_chirho">
+                                Starting: $50-80+/hr (project scope dependent)
+                            </p>
+                        </div>
+                        <div class="service-item_chirho">
+                            <h4>Cloud & Security Management</h4>
+                            <p>
+                                Assisting with cloud services (AWS, etc.) and
+                                online security practices.
+                            </p>
+                            <p class="price_chirho">Starting: $30-75/hr</p>
+                        </div>
+                    </div>
+                    <div class="services-notes_chirho">
+                        <p>
+                            <strong>Note:</strong> Starting rates are flexible
+                            and can be adjusted based on project complexity,
+                            duration, or relationship (e.g., for fellow church
+                            members or ministries). Flat rates for projects can
+                            also be discussed. Services available via Zoom. A
+                            $25 travel fee may apply for locations over 25
+                            minutes away.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact_chirho">
+            <div class="container_chirho">
+                <h2>Contact Me</h2>
+                <p>
+                    Interested in working together or have a question? Feel free
+                    to reach out!
+                </p>
+                <div class="contact-info_chirho">
+                    <a href="mailto:lovejesus@lovejes.us"
+                        ><i class="fas fa-envelope"></i> lovejesus@lovejes.us</a
+                    >
+                    <span><i class="fas fa-phone"></i> +1 239 848 1119</span>
+                    <p>
+                        <i class="fas fa-map-marker-alt"></i> Location: Fort
+                        Myers, Florida, United States
+                    </p>
+                </div>
+                <div class="social-links_chirho">
+                    <a
+                        href="https://www.linkedin.com/in/loveJesus"
+                        target="_blank"
+                        aria-label="LinkedIn"
+                        ><i class="fab fa-linkedin"></i
+                    ></a>
+                    <a
+                        href="https://github.com/loveJesus"
+                        target="_blank"
+                        aria-label="GitHub"
+                        ><i class="fab fa-github"></i
+                    ></a>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container_chirho">
+                <p>
+                    <a
+                        href="https://www.jesusfilm.org/"
+                        target="_blank"
+                        class="copyright-link_chirho"
+                        aria-label="Jesus Film Project"
+                        >©</a
+                    >
+                    2025 L.J. (Brian Cowan). All rights reserved.
+                </p>
+                <p>Inspired by The Gospel</p>
+            </div>
+        </footer>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+        <script>
+            // John 3:16 "For God so loved the world, that he gave his only Son,
+            // that whoever believes in him should not perish but have eternal life."
+    
+            const canvasChirho = document.getElementById('bg-canvas_chirho');
+            if (canvasChirho) {
+                // --- Basic Three.js Setup ---
+                const sceneChirho = new THREE.Scene();
+                const cameraChirho = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                cameraChirho.position.z = 50;
+    
+                const rendererChirho = new THREE.WebGLRenderer({ canvas: canvasChirho, alpha: true });
+                 rendererChirho.setSize(window.innerWidth, window.innerHeight);
+                 rendererChirho.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    
+                // --- Lighting (Important for non-basic materials) ---
+                const ambientLightChirho = new THREE.AmbientLight(0xffffff, 0.6); // Soft white light
+                sceneChirho.add(ambientLightChirho);
+                const directionalLightChirho = new THREE.DirectionalLight(0xffffff, 0.8); // Directional light
+                directionalLightChirho.position.set(5, 10, 7.5);
+                sceneChirho.add(directionalLightChirho);
+    
+    
+                // --- Particles (Same as before) ---
+                const particlesGeometryChirho = new THREE.BufferGeometry();
+                const particlesCntChirho = 5000;
+                const posArrayChirho = new Float32Array(particlesCntChirho * 3);
+                for(let i_chirho = 0; i_chirho < particlesCntChirho * 3; i_chirho++) {
+                    posArrayChirho[i_chirho] = (Math.random() - 0.5) * 200;
+                }
+                particlesGeometryChirho.setAttribute('position', new THREE.BufferAttribute(posArrayChirho, 3));
+                const particlesMaterialChirho = new THREE.PointsMaterial({
+                    size: 0.085, color: 0xaaaaaa, blending: THREE.AdditiveBlending, transparent: true, opacity: 0.7
+                });
+                const particleMeshChirho = new THREE.Points(particlesGeometryChirho, particlesMaterialChirho);
+                sceneChirho.add(particleMeshChirho);
+    
+    
+                // --- Box Wireframe Cross - Using 12 Edges per Beam ---
+                const mainCrossGroupChirho = new THREE.Group(); // Group to hold the final cross
+    
+                // Define dimensions and thickness
+                const edgeThickness_chirho = 0.3; // How thick the "wires" are
+                const verticalHeight_chirho = 25; // Total height of the vertical part
+                const verticalWidth_chirho = 2;   // Width of the conceptual vertical beam
+                const horizontalWidth_chirho = 16; // Total width of the horizontal part
+                const horizontalHeight_chirho = 2; // Height of the conceptual horizontal beam
+                const crossDepth_chirho = 1.5;    // How deep the cross is
+                const horizontalYOffset_chirho = 5; // How far up the horizontal beam sits
+    
+                // Material for the edge beams
+                // Using MeshStandardMaterial for better shading with lights
+                const edgeMaterialChirho = new THREE.MeshStandardMaterial({
+                    color: 0x00aaff, // Blue color
+                    roughness: 0.5,
+                    metalness: 0.1
+                });
+    
+                /**
+                 * Creates a wireframe outline for a conceptual box using thin box meshes.
+                 * @param {number} width - Width (X) of the conceptual box.
+                 * @param {number} height - Height (Y) of the conceptual box.
+                 * @param {number} depth - Depth (Z) of the conceptual box.
+                 * @param {number} thickness - Thickness of the edge beams.
+                 * @returns {THREE.Group} - A group containing the 12 edge beams.
+                 */
+                function createBoxOutlineChirho(width, height, depth, thickness) {
+                    const group = new THREE.Group();
+                    const w = width / 2;
+                    const h = height / 2;
+                    const d = depth / 2;
+    
+                    // Helper to create one edge beam
+                    const createEdge = (w_geom, h_geom, d_geom, x_pos, y_pos, z_pos) => {
+                        const geometry = new THREE.BoxGeometry(w_geom, h_geom, d_geom);
+                        const mesh = new THREE.Mesh(geometry, edgeMaterialChirho);
+                        mesh.position.set(x_pos, y_pos, z_pos);
+                        group.add(mesh);
+                    };
+    
+                    // Create 12 edges
+                    // 4 Edges along Height (Y)
+                    createEdge(thickness, height, thickness, -w, 0, d);
+                    createEdge(thickness, height, thickness, w, 0, d);
+                    createEdge(thickness, height, thickness, -w, 0, -d);
+                    createEdge(thickness, height, thickness, w, 0, -d);
+    
+                    // 4 Edges along Width (X)
+                    createEdge(width, thickness, thickness, 0, h, d);
+                    createEdge(width, thickness, thickness, 0, -h, d);
+                    createEdge(width, thickness, thickness, 0, h, -d);
+                    createEdge(width, thickness, thickness, 0, -h, -d);
+    
+                    // 4 Edges along Depth (Z)
+                    createEdge(thickness, thickness, depth, -w, h, 0);
+                    createEdge(thickness, thickness, depth, w, h, 0);
+                    createEdge(thickness, thickness, depth, -w, -h, 0);
+                    createEdge(thickness, thickness, depth, w, -h, 0);
+    
+                    return group;
+                }
+    
+                // Create the outlines for the vertical and horizontal parts
+                const verticalOutlineGroupChirho = createBoxOutlineChirho(
+                    verticalWidth_chirho,
+                    verticalHeight_chirho,
+                    crossDepth_chirho,
+                    edgeThickness_chirho
+                );
+    
+                const horizontalOutlineGroupChirho = createBoxOutlineChirho(
+                    horizontalWidth_chirho,
+                    horizontalHeight_chirho,
+                    crossDepth_chirho,
+                    edgeThickness_chirho
+                );
+    
+                // Position the horizontal outline relative to the vertical one
+                horizontalOutlineGroupChirho.position.y = horizontalYOffset_chirho;
+    
+                // Add both outlines to the main cross group
+                mainCrossGroupChirho.add(verticalOutlineGroupChirho);
+                mainCrossGroupChirho.add(horizontalOutlineGroupChirho);
+    
+                // Position the entire cross group
+                mainCrossGroupChirho.position.set(0, 0, 10);
+                sceneChirho.add(mainCrossGroupChirho);
+                // --- End Box Wireframe Cross ---
+    
+    
+                // --- Event Listeners ---
+                window.addEventListener('resize', () => {
+                    cameraChirho.aspect = window.innerWidth / window.innerHeight;
+                    cameraChirho.updateProjectionMatrix();
+                    rendererChirho.setSize(window.innerWidth, window.innerHeight);
+                    rendererChirho.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                });
+    
+                 let mouseXChirho = 0;
+                 let mouseYChirho = 0;
+                 document.addEventListener('mousemove', (eventChirho) => {
+                     mouseXChirho = (eventChirho.clientX / window.innerWidth) * 2 - 1;
+                     mouseYChirho = -(eventChirho.clientY / window.innerHeight) * 2 + 1;
+                 });
+    
+    
+                // --- Animation Loop ---
+                const clockChirho = new THREE.Clock();
+                const animateChirho = () => {
+                    const elapsedTimeChirho = clockChirho.getElapsedTime();
+    
+                    particleMeshChirho.rotation.y = elapsedTimeChirho * 0.05;
+                    particleMeshChirho.rotation.x = elapsedTimeChirho * 0.02;
+    
+                    // Rotate the main cross group
+                    mainCrossGroupChirho.rotation.x = elapsedTimeChirho * 0.2;
+                    mainCrossGroupChirho.rotation.y = elapsedTimeChirho * 0.3;
+                    mainCrossGroupChirho.rotation.z = elapsedTimeChirho * 0.1;
+    
+                     cameraChirho.position.x += (mouseXChirho * 5 - cameraChirho.position.x) * 0.02;
+                     cameraChirho.position.y += (-mouseYChirho * 5 - cameraChirho.position.y) * 0.02;
+                     cameraChirho.lookAt(sceneChirho.position);
+    
+                    rendererChirho.render(sceneChirho, cameraChirho);
+                    window.requestAnimationFrame(animateChirho);
+                };
+    
+                 window.onload = function() {
+                     animateChirho();
+                 }
+    
+            } else {
+                 console.error("Canvas element #bg-canvas_chirho not found.");
+            }
+        </script>
+    </body>
+</html>
