@@ -448,7 +448,7 @@
     <body>
         <nav>
             <div class="container_chirho">
-                <a href="#hero_chirho" class="logo_chirho">L.J.</a>
+                <a href="#hero_chirho" class="logo_chirho">Love Jesus / LJ</a>
                 <ul>
                     <li><a href="#about_chirho">About</a></li>
                     <li><a href="#skills_chirho">Skills</a></li>
@@ -480,7 +480,7 @@
                 <h2>About Me</h2>
                 <p>
                     Hi, I'm L.J. short for Love Jesus, there is a story behind
-                    that. By God's grace I'm been an experienced and versatile
+                    that. By God's grace I've been an experienced and versatile
                     software engineer currently based in Florida. I'm passionate
                     about building robust, efficient, and secure applications
                     that solve real-world problems. With a strong foundation in
@@ -901,184 +901,434 @@
             // John 3:16 "For God so loved the world, that he gave his only Son,
             // that whoever believes in him should not perish but have eternal life."
 
-            const canvasChirho = document.getElementById("bg-canvas_chirho");
-            if (canvasChirho) {
-                // --- Basic Three.js Setup ---
-                const sceneChirho = new THREE.Scene();
-                const cameraChirho = new THREE.PerspectiveCamera(
-                    75,
-                    window.innerWidth / window.innerHeight,
-                    0.1,
-                    1000,
+            // --- Shader Definitions ---
+            // Vertex Shader for Raw WebGL2 (Simple Quad)
+            const rawVertexShaderSource_chirho = `#version 300 es
+                    in vec2 a_position; // Expect vec2 input
+                    void main() {
+                        gl_Position = vec4(a_position, 0.0, 1.0);
+                    }
+                `;
+
+            // Updated Fragment Shader for Raw WebGL2 (Raymarching Scene)
+            const rawFragmentShaderSource_chirho = `#version 300 es
+                        precision highp float; // High precision needed
+
+                        uniform vec2 u_resolution_chirho; // Use convention
+                        uniform float u_time_chirho;       // Use convention
+                        // uniform vec2 u_mouse_chirho;    // Use convention if mouse is added
+
+                        out vec4 fragColor_chirho; // Use convention
+
+                        // --- Common Utilities ---
+                        #define PI_CHIRHO 3.14159265359
+                        #define MAX_STEPS_CHIRHO 100
+                        #define MAX_DIST_CHIRHO 100.0
+                        #define SURF_DIST_CHIRHO 0.001
+
+                        // --- Constants ---
+                        const int NUM_CROSSES_CHIRHO = 5;
+                        const int NUM_SMALL_SPHERES_CHIRHO = 8;
+
+                        // --- Rotation Matrices ---
+                        mat3 rotateYChirho(float a_chirho) { float s_chirho=sin(a_chirho),c_chirho=cos(a_chirho); return mat3(c_chirho,0,-s_chirho,0,1,0,s_chirho,0,c_chirho); }
+                        mat3 rotateXChirho(float a_chirho) { float s_chirho=sin(a_chirho),c_chirho=cos(a_chirho); return mat3(1,0,0,0,c_chirho,s_chirho,0,-s_chirho,c_chirho); }
+                        mat3 rotateZChirho(float a_chirho) { float s_chirho=sin(a_chirho),c_chirho=cos(a_chirho); return mat3(c_chirho,s_chirho,0,-s_chirho,c_chirho,0,0,0,1); }
+
+                        // --- Signed Distance Functions (SDFs) ---
+                        float sdSphereChirho(vec3 p_chirho, float r_chirho) { return length(p_chirho) - r_chirho; }
+
+                        float sdBoxChirho( vec3 p_chirho, vec3 b_chirho ) {
+                            vec3 q_chirho = abs(p_chirho) - b_chirho;
+                            return length(max(q_chirho,0.0)) + min(max(q_chirho.x,max(q_chirho.y,q_chirho.z)),0.0);
+                        }
+
+                        // SDF for a Latin Cross shape (longer bottom stem)
+                        float sdLatinCrossChirho(vec3 p_chirho, float height_chirho, float width_chirho, float arm_y_offset_chirho, float thickness_chirho) {
+                            float half_thick_chirho = thickness_chirho * 0.5;
+                            // Calculate vertical beam dimensions relative to its center
+                            // Total height = height_chirho. Center is at 0. Top is height/2, bottom is -height/2.
+                            vec3 box_v_dims_chirho = vec3(half_thick_chirho, height_chirho * 0.5, half_thick_chirho);
+
+                            // Calculate horizontal beam dimensions relative to its center
+                            vec3 box_h_dims_chirho = vec3(width_chirho * 0.5, half_thick_chirho, half_thick_chirho);
+                            // Point relative to the horizontal beam's center (shifted up by arm_y_offset)
+                            vec3 p_h_chirho = p_chirho - vec3(0.0, arm_y_offset_chirho, 0.0);
+
+                            float d1_chirho = sdBoxChirho(p_chirho, box_v_dims_chirho);
+                            float d2_chirho = sdBoxChirho(p_h_chirho, box_h_dims_chirho);
+                            return min(d1_chirho, d2_chirho); // Sharp intersection
+                        }
+
+
+                        // --- Scene Definition ---
+                        // Material IDs: 1.0=CenterSphere, 2.0=Crosses, 3.0+ = SmallSpheres (ID = 3.0 + index)
+                        vec2 mapSceneChirho(vec3 p_chirho) {
+                            // Central Sphere
+                            float centerSphereDist_chirho = sdSphereChirho(p_chirho, 1.5);
+                            vec2 res_chirho = vec2(centerSphereDist_chirho, 1.0);
+
+                            // Orbiting Crosses
+                            float angle_step_cross_chirho = 2.0 * PI_CHIRHO / float(NUM_CROSSES_CHIRHO);
+                            float orbit_radius_cross_chirho = 4.5;
+                            float cross_height_chirho = 1.0;
+                            float cross_width_chirho = 0.7;
+                            float cross_thickness_chirho = 0.15;
+                            float cross_arm_y_chirho = (cross_height_chirho * 0.5) * 0.4; // Position arm relative to top part
+
+                            for (int i_chirho = 0; i_chirho < NUM_CROSSES_CHIRHO; i_chirho++) {
+                                float current_angle_chirho = float(i_chirho) * angle_step_cross_chirho + u_time_chirho * 0.4;
+                                vec3 cross_pos_chirho = vec3(cos(current_angle_chirho) * orbit_radius_cross_chirho, sin(u_time_chirho * 0.6 + float(i_chirho)*1.5) * 1.5, sin(current_angle_chirho) * orbit_radius_cross_chirho);
+                                vec3 p_local_chirho = p_chirho - cross_pos_chirho;
+                                p_local_chirho = rotateYChirho(current_angle_chirho + PI_CHIRHO/2.0) * rotateZChirho(u_time_chirho * 0.3 + float(i_chirho)) * p_local_chirho; // Rotate cross
+
+                                // No warping applied here
+                                float crossDist_chirho = sdLatinCrossChirho(p_local_chirho, cross_height_chirho, cross_width_chirho, cross_arm_y_chirho, cross_thickness_chirho);
+
+                                if (crossDist_chirho < res_chirho.x) {
+                                    res_chirho = vec2(crossDist_chirho, 2.0);
+                                }
+                            }
+
+                             // Orbiting Small Spheres
+                            float angle_step_sphere_chirho = 2.0 * PI_CHIRHO / float(NUM_SMALL_SPHERES_CHIRHO);
+                            float orbit_radius_sphere_chirho = 3.0;
+                            float small_sphere_radius_chirho = 0.3;
+
+                            for (int i_chirho = 0; i_chirho < NUM_SMALL_SPHERES_CHIRHO; i_chirho++) {
+                                // Vary rotation direction and speed based on index
+                                float time_offset_chirho = float(i_chirho) * 0.5;
+                                float speed_multiplier_chirho = (mod(float(i_chirho), 2.0) == 0.0) ? -0.5 : 0.6; // Alternate direction
+                                float current_angle_chirho = float(i_chirho) * angle_step_sphere_chirho + u_time_chirho * speed_multiplier_chirho + time_offset_chirho;
+
+                                vec3 sphere_pos_chirho = vec3(cos(current_angle_chirho) * orbit_radius_sphere_chirho, cos(u_time_chirho * 0.7 + float(i_chirho)*2.0) * 1.0, sin(current_angle_chirho) * orbit_radius_sphere_chirho);
+                                vec3 p_local_chirho = p_chirho - sphere_pos_chirho;
+                                float sphereDist_chirho = sdSphereChirho(p_local_chirho, small_sphere_radius_chirho);
+
+                                 if (sphereDist_chirho < res_chirho.x) {
+                                    // Assign unique material ID range for small spheres
+                                    res_chirho = vec2(sphereDist_chirho, 3.0 + float(i_chirho));
+                                }
+                            }
+
+                            return res_chirho;
+                        }
+
+                        // --- Normal Calculation ---
+                        vec3 calcNormalChirho(vec3 p_chirho) {
+                            vec2 e_chirho = vec2(SURF_DIST_CHIRHO, 0.0);
+                            return normalize(vec3(
+                                mapSceneChirho(p_chirho + e_chirho.xyy).x - mapSceneChirho(p_chirho - e_chirho.xyy).x,
+                                mapSceneChirho(p_chirho + e_chirho.yxy).x - mapSceneChirho(p_chirho - e_chirho.yxy).x,
+                                mapSceneChirho(p_chirho + e_chirho.yyx).x - mapSceneChirho(p_chirho - e_chirho.yyx).x
+                            ));
+                        }
+
+                         // --- Simple Sky Color Function ---
+                        vec3 getSkyColorChirho(vec3 rd_chirho) {
+                            float y_chirho = max(rd_chirho.y, 0.0);
+                            vec3 bottomColor_chirho = vec3(0.1, 0.1, 0.2);
+                            vec3 topColor_chirho = vec3(0.5, 0.7, 0.9);
+                            return mix(bottomColor_chirho, topColor_chirho, pow(y_chirho, 0.5));
+                        }
+
+                         // --- Raymarching Core ---
+                        vec2 rayMarchChirho(vec3 ro_chirho, vec3 rd_chirho, int max_reflections_chirho) {
+                            float dO_chirho = 0.0;
+                            vec2 res_chirho = vec2(-1.0, -1.0);
+
+                            for(int i_chirho = 0; i_chirho < MAX_STEPS_CHIRHO; i_chirho++) {
+                                if (max_reflections_chirho < 0) break;
+                                vec3 p_chirho = ro_chirho + rd_chirho * dO_chirho;
+                                res_chirho = mapSceneChirho(p_chirho);
+                                float dS_chirho = res_chirho.x;
+                                dO_chirho += dS_chirho;
+                                if(dS_chirho < SURF_DIST_CHIRHO || dO_chirho > MAX_DIST_CHIRHO) break;
+                            }
+                            if (dO_chirho >= MAX_DIST_CHIRHO) dO_chirho = MAX_DIST_CHIRHO;
+                            return vec2(dO_chirho, res_chirho.y);
+                        }
+
+                        // --- Main Shading Function ---
+                        vec3 renderChirho(vec3 ro_chirho, vec3 rd_chirho) {
+                             vec3 finalColor_chirho = vec3(0.0);
+                             vec3 throughput_chirho = vec3(1.0);
+                             int max_reflections_chirho = 2; // Max reflection bounces
+
+                             for (int i_chirho = 0; i_chirho < max_reflections_chirho + 1; ++i_chirho) {
+                                 vec2 rayResult_chirho = rayMarchChirho(ro_chirho, rd_chirho, max_reflections_chirho - i_chirho);
+                                 float d_chirho = rayResult_chirho.x;
+                                 float materialID_chirho = rayResult_chirho.y;
+
+                                 if (d_chirho >= MAX_DIST_CHIRHO) {
+                                     finalColor_chirho += throughput_chirho * getSkyColorChirho(rd_chirho);
+                                     break;
+                                 }
+
+                                 vec3 p_chirho = ro_chirho + rd_chirho * d_chirho;
+                                 vec3 n_chirho = calcNormalChirho(p_chirho);
+                                 vec3 viewDir_chirho = -rd_chirho;
+
+                                 vec3 lightPos_chirho = vec3(5.0 * sin(u_time_chirho * 0.2), 7.0, 8.0 * cos(u_time_chirho * 0.2));
+                                 vec3 lightDir_chirho = normalize(lightPos_chirho - p_chirho);
+                                 float diffuse_chirho = max(dot(n_chirho, lightDir_chirho), 0.0);
+                                 float ambient_chirho = 0.15;
+
+                                 vec3 baseColor_chirho = vec3(0.8);
+                                 float reflectivity_chirho = 0.0;
+                                 float metallic_chirho = 0.0;
+
+                                 if (materialID_chirho == 1.0) { // Center Sphere
+                                    baseColor_chirho = vec3(0.95);
+                                    reflectivity_chirho = 0.8;
+                                    metallic_chirho = 0.9;
+                                 } else if (materialID_chirho == 2.0) { // Crosses
+                                    baseColor_chirho = vec3(0.9, 0.7, 0.2);
+                                    reflectivity_chirho = 0.3;
+                                    metallic_chirho = 0.8;
+                                 } else if (materialID_chirho >= 3.0) { // Small Spheres
+                                     float sphereIndex_chirho = materialID_chirho - 3.0;
+                                     float hue_chirho = mod(sphereIndex_chirho / float(NUM_SMALL_SPHERES_CHIRHO) + u_time_chirho * 0.05, 1.0);
+                                     vec3 K_chirho = vec3(1.0, 2.0 / 3.0, 1.0 / 3.0);
+                                     vec3 p_col_chirho = abs(fract(hue_chirho + K_chirho) * 6.0 - 3.0);
+                                     baseColor_chirho = mix(K_chirho.xxx, clamp(p_col_chirho - 1.0, 0.0, 1.0), 0.8);
+
+                                     reflectivity_chirho = 0.6;
+                                     metallic_chirho = 0.1;
+                                 }
+
+                                 float fresnel_chirho = pow(1.0 - max(dot(viewDir_chirho, n_chirho), 0.0), 3.0) * 0.8 + 0.2;
+                                 float effectiveReflectivity_chirho = mix(reflectivity_chirho, 1.0, metallic_chirho * fresnel_chirho);
+
+                                 vec3 directLight_chirho = baseColor_chirho * (diffuse_chirho * (1.0 - metallic_chirho) + ambient_chirho);
+                                 finalColor_chirho += throughput_chirho * directLight_chirho * (1.0 - effectiveReflectivity_chirho);
+
+                                 throughput_chirho *= mix(baseColor_chirho, vec3(1.0), metallic_chirho) * effectiveReflectivity_chirho;
+                                 rd_chirho = reflect(rd_chirho, n_chirho);
+                                 ro_chirho = p_chirho + n_chirho * SURF_DIST_CHIRHO * 2.0;
+
+                                 if (max(throughput_chirho.r, max(throughput_chirho.g, throughput_chirho.b)) < 0.01) break;
+                             }
+
+                            return finalColor_chirho;
+                        }
+
+
+                        void main() {
+                            vec2 uv_chirho = (gl_FragCoord.xy * 2.0 - u_resolution_chirho.xy) / u_resolution_chirho.y;
+                            vec3 ro_chirho = vec3(0.0, 0.0, 10.0);
+                            vec3 rd_chirho = normalize(vec3(uv_chirho, -1.5));
+                            vec3 finalColor_chirho = renderChirho(ro_chirho, rd_chirho);
+                            fragColor_chirho = vec4(finalColor_chirho, 1.0);
+                        }
+                `;
+
+            /** Helper function to create and compile a shader. */
+            function createShader_chirho(gl, type, source) {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                const success = gl.getShaderParameter(
+                    shader,
+                    gl.COMPILE_STATUS,
                 );
-                cameraChirho.position.z = 50;
-
-                const rendererChirho = new THREE.WebGLRenderer({
-                    canvas: canvasChirho,
-                    alpha: true,
-                });
-                rendererChirho.setSize(window.innerWidth, window.innerHeight);
-                rendererChirho.setPixelRatio(
-                    Math.min(window.devicePixelRatio, 2),
+                if (success) return shader;
+                console.error(
+                    `Error compiling shader (${type === gl.VERTEX_SHADER ? "Vertex" : "Fragment"}):`,
+                    gl.getShaderInfoLog(shader),
                 );
+                gl.deleteShader(shader);
+                return null;
+            }
 
-                // --- Lighting (Important for non-basic materials) ---
-                const ambientLightChirho = new THREE.AmbientLight(
-                    0xffffff,
-                    0.6,
-                ); // Soft white light
-                sceneChirho.add(ambientLightChirho);
-                const directionalLightChirho = new THREE.DirectionalLight(
-                    0xffffff,
-                    0.8,
-                ); // Directional light
-                directionalLightChirho.position.set(5, 10, 7.5);
-                sceneChirho.add(directionalLightChirho);
-
-                // --- Particles (Same as before) ---
-                const particlesGeometryChirho = new THREE.BufferGeometry();
-                const particlesCntChirho = 5000;
-                const posArrayChirho = new Float32Array(particlesCntChirho * 3);
-                for (
-                    let i_chirho = 0;
-                    i_chirho < particlesCntChirho * 3;
-                    i_chirho++
-                ) {
-                    posArrayChirho[i_chirho] = (Math.random() - 0.5) * 200;
-                }
-                particlesGeometryChirho.setAttribute(
-                    "position",
-                    new THREE.BufferAttribute(posArrayChirho, 3),
+            /** Helper function to create and link a shader program. */
+            function createProgram_chirho(gl, vertexShader, fragmentShader) {
+                const program = gl.createProgram();
+                gl.attachShader(program, vertexShader);
+                gl.attachShader(program, fragmentShader);
+                gl.linkProgram(program);
+                const success = gl.getProgramParameter(program, gl.LINK_STATUS);
+                if (success) return program;
+                console.error(
+                    "Error linking program:",
+                    gl.getProgramInfoLog(program),
                 );
-                const particlesMaterialChirho = new THREE.PointsMaterial({
-                    size: 0.085,
-                    color: 0xaaaaaa,
-                    blending: THREE.AdditiveBlending,
-                    transparent: true,
-                    opacity: 0.7,
-                });
-                const particleMeshChirho = new THREE.Points(
-                    particlesGeometryChirho,
-                    particlesMaterialChirho,
+                gl.deleteProgram(program);
+                return null;
+            }
+
+            /**
+             * Initializes the primary effect using Raw WebGL2 (Raymarching Scene).
+             * @param {HTMLCanvasElement} canvasChirho - The canvas element.
+             * @param {WebGL2RenderingContext} gl - The WebGL2 context.
+             * @returns {boolean} True if initialization was successful, false otherwise.
+             */
+            function initRawWebGL2Effect_chirho(canvasChirho, gl) {
+                console.log(
+                    "Attempting to initialize Raw WebGL2 Raymarch Effect...",
                 );
-                sceneChirho.add(particleMeshChirho);
+                try {
+                    // --- Compile Shaders ---
+                    const vertexShader = createShader_chirho(
+                        gl,
+                        gl.VERTEX_SHADER,
+                        rawVertexShaderSource_chirho,
+                    );
+                    const fragmentShader = createShader_chirho(
+                        gl,
+                        gl.FRAGMENT_SHADER,
+                        rawFragmentShaderSource_chirho,
+                    );
+                    if (!vertexShader || !fragmentShader) return false;
 
-                // --- Box Wireframe Cross - Using 12 Edges per Beam ---
-                const mainCrossGroupChirho = new THREE.Group(); // Group to hold the final cross
+                    // --- Link Program ---
+                    const program = createProgram_chirho(
+                        gl,
+                        vertexShader,
+                        fragmentShader,
+                    );
+                    if (!program) return false;
 
-                // Define dimensions and thickness
-                const edgeThickness_chirho = 0.3; // How thick the "wires" are
-                const verticalHeight_chirho = 25; // Total height of the vertical part
-                const verticalWidth_chirho = 2; // Width of the conceptual vertical beam
-                const horizontalWidth_chirho = 16; // Total width of the horizontal part
-                const horizontalHeight_chirho = 2; // Height of the conceptual horizontal beam
-                const crossDepth_chirho = 1.5; // How deep the cross is
-                const horizontalYOffset_chirho = 5; // How far up the horizontal beam sits
+                    // --- Use Program BEFORE getting locations ---
+                    gl.useProgram(program);
 
-                // Material for the edge beams
-                // Using MeshStandardMaterial for better shading with lights
-                const edgeMaterialChirho = new THREE.MeshStandardMaterial({
-                    color: 0x00aaff, // Blue color
-                    roughness: 0.5,
-                    metalness: 0.1,
-                });
+                    // --- Get Attribute & Uniform Locations ---
+                    const positionAttributeLocation = gl.getAttribLocation(
+                        program,
+                        "a_position",
+                    );
+                    const resolutionUniformLocation = gl.getUniformLocation(
+                        program,
+                        "u_resolution_chirho",
+                    );
+                    const timeUniformLocation = gl.getUniformLocation(
+                        program,
+                        "u_time_chirho",
+                    );
+                    // const mouseUniformLocation = gl.getUniformLocation(program, "u_mouse");
 
-                /**
-                 * Creates a wireframe outline for a conceptual box using thin box meshes.
-                 * @param {number} width - Width (X) of the conceptual box.
-                 * @param {number} height - Height (Y) of the conceptual box.
-                 * @param {number} depth - Depth (Z) of the conceptual box.
-                 * @param {number} thickness - Thickness of the edge beams.
-                 * @returns {THREE.Group} - A group containing the 12 edge beams.
-                 */
-                function createBoxOutlineChirho(
-                    width,
-                    height,
-                    depth,
-                    thickness,
-                ) {
-                    const group = new THREE.Group();
-                    const w = width / 2;
-                    const h = height / 2;
-                    const d = depth / 2;
-
-                    // Helper to create one edge beam
-                    const createEdge = (
-                        w_geom,
-                        h_geom,
-                        d_geom,
-                        x_pos,
-                        y_pos,
-                        z_pos,
-                    ) => {
-                        const geometry = new THREE.BoxGeometry(
-                            w_geom,
-                            h_geom,
-                            d_geom,
+                    if (positionAttributeLocation < 0) {
+                        console.error(
+                            "Failed to get attribute location for a_position",
                         );
-                        const mesh = new THREE.Mesh(
-                            geometry,
-                            edgeMaterialChirho,
+                        return false;
+                    }
+
+                    // --- Create Buffer for Quad Vertices ---
+                    const positions = [
+                        -1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1,
+                    ];
+                    const positionBuffer = gl.createBuffer();
+
+                    // --- Vertex Array Object (VAO) Setup ---
+                    const vao = gl.createVertexArray();
+                    gl.bindVertexArray(vao);
+                    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+                    gl.bufferData(
+                        gl.ARRAY_BUFFER,
+                        new Float32Array(positions),
+                        gl.STATIC_DRAW,
+                    );
+                    gl.enableVertexAttribArray(positionAttributeLocation);
+                    const size = 2;
+                    const type = gl.FLOAT;
+                    const normalize = false;
+                    const stride = 0;
+                    const offset = 0;
+                    gl.vertexAttribPointer(
+                        positionAttributeLocation,
+                        size,
+                        type,
+                        normalize,
+                        stride,
+                        offset,
+                    );
+                    gl.bindVertexArray(null); // Unbind VAO
+
+                    // --- Resize Handling ---
+                    function resizeCanvasToDisplaySize(canvas) {
+                        const displayWidth = canvas.clientWidth;
+                        const displayHeight = canvas.clientHeight;
+                        if (
+                            canvas.width !== displayWidth ||
+                            canvas.height !== displayHeight
+                        ) {
+                            canvas.width = displayWidth;
+                            canvas.height = displayHeight;
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    // --- Render Loop ---
+                    let startTime = performance.now();
+                    function renderLoop(currentTime) {
+                        const time = (currentTime - startTime) * 0.001; // Time in seconds
+
+                        resizeCanvasToDisplaySize(gl.canvas);
+                        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+                        gl.clearColor(0, 0, 0, 0);
+                        gl.clear(gl.COLOR_BUFFER_BIT);
+
+                        gl.useProgram(program);
+                        gl.bindVertexArray(vao);
+
+                        // Update uniforms
+                        gl.uniform2f(
+                            resolutionUniformLocation,
+                            gl.canvas.width,
+                            gl.canvas.height,
                         );
-                        mesh.position.set(x_pos, y_pos, z_pos);
-                        group.add(mesh);
-                    };
+                        gl.uniform1f(timeUniformLocation, time);
+                        // gl.uniform2f(mouseUniformLocation, mouseX_norm, mouseY_norm);
 
-                    // Create 12 edges
-                    // 4 Edges along Height (Y)
-                    createEdge(thickness, height, thickness, -w, 0, d);
-                    createEdge(thickness, height, thickness, w, 0, d);
-                    createEdge(thickness, height, thickness, -w, 0, -d);
-                    createEdge(thickness, height, thickness, w, 0, -d);
+                        const primitiveType = gl.TRIANGLES;
+                        const drawOffset = 0;
+                        const count = 6;
+                        gl.drawArrays(primitiveType, drawOffset, count);
 
-                    // 4 Edges along Width (X)
-                    createEdge(width, thickness, thickness, 0, h, d);
-                    createEdge(width, thickness, thickness, 0, -h, d);
-                    createEdge(width, thickness, thickness, 0, h, -d);
-                    createEdge(width, thickness, thickness, 0, -h, -d);
+                        requestAnimationFrame(renderLoop);
+                    }
+                    requestAnimationFrame(renderLoop); // Start the loop
 
-                    // 4 Edges along Depth (Z)
-                    createEdge(thickness, thickness, depth, -w, h, 0);
-                    createEdge(thickness, thickness, depth, w, h, 0);
-                    createEdge(thickness, thickness, depth, -w, -h, 0);
-                    createEdge(thickness, thickness, depth, w, -h, 0);
-
-                    return group;
+                    console.log("Raw WebGL2 Raymarch Effect Initialized.");
+                    return true; // Indicate success
+                } catch (error) {
+                    console.error(
+                        "Error initializing Raw WebGL2 effect:",
+                        error,
+                    );
+                    return false; // Indicate failure
                 }
+            }
 
-                // Create the outlines for the vertical and horizontal parts
-                const verticalOutlineGroupChirho = createBoxOutlineChirho(
-                    verticalWidth_chirho,
-                    verticalHeight_chirho,
-                    crossDepth_chirho,
-                    edgeThickness_chirho,
-                );
-
-                const horizontalOutlineGroupChirho = createBoxOutlineChirho(
-                    horizontalWidth_chirho,
-                    horizontalHeight_chirho,
-                    crossDepth_chirho,
-                    edgeThickness_chirho,
-                );
-
-                // Position the horizontal outline relative to the vertical one
-                horizontalOutlineGroupChirho.position.y =
-                    horizontalYOffset_chirho;
-
-                // Add both outlines to the main cross group
-                mainCrossGroupChirho.add(verticalOutlineGroupChirho);
-                mainCrossGroupChirho.add(horizontalOutlineGroupChirho);
-
-                // Position the entire cross group
-                mainCrossGroupChirho.position.set(0, 0, 10);
-                sceneChirho.add(mainCrossGroupChirho);
-                // --- End Box Wireframe Cross ---
-
-                // --- Event Listeners ---
-                window.addEventListener("resize", () => {
-                    cameraChirho.aspect =
-                        window.innerWidth / window.innerHeight;
-                    cameraChirho.updateProjectionMatrix();
+            /**
+             * Initializes the WebGL1 fallback effect (particles + wireframe box cross) using Three.js.
+             * @param {HTMLCanvasElement} canvasChirho - The canvas element.
+             * @param {WebGLRenderingContext} gl - The WebGL1 context.
+             * @returns {boolean} True if initialization was successful, false otherwise.
+             */
+            function initCrossEffect_chirho(canvasChirho, gl) {
+                console.log("Attempting to initialize WebGL1 Cross Effect...");
+                if (typeof THREE === "undefined") {
+                    console.error("Three.js library not loaded.");
+                    return false;
+                }
+                try {
+                    // --- Three.js Setup ---
+                    const sceneChirho = new THREE.Scene();
+                    const cameraChirho = new THREE.PerspectiveCamera(
+                        75,
+                        window.innerWidth / window.innerHeight,
+                        0.1,
+                        1000,
+                    );
+                    cameraChirho.position.z = 50;
+                    const rendererChirho = new THREE.WebGLRenderer({
+                        canvas: canvasChirho,
+                        context: gl,
+                        alpha: true,
+                    });
                     rendererChirho.setSize(
                         window.innerWidth,
                         window.innerHeight,
@@ -1086,46 +1336,263 @@
                     rendererChirho.setPixelRatio(
                         Math.min(window.devicePixelRatio, 2),
                     );
-                });
 
-                let mouseXChirho = 0;
-                let mouseYChirho = 0;
-                document.addEventListener("mousemove", (eventChirho) => {
-                    mouseXChirho =
-                        (eventChirho.clientX / window.innerWidth) * 2 - 1;
-                    mouseYChirho =
-                        -(eventChirho.clientY / window.innerHeight) * 2 + 1;
-                });
+                    // --- Lighting ---
+                    const ambientLightChirho = new THREE.AmbientLight(
+                        0xffffff,
+                        0.6,
+                    );
+                    sceneChirho.add(ambientLightChirho);
+                    const directionalLightChirho = new THREE.DirectionalLight(
+                        0xffffff,
+                        0.8,
+                    );
+                    directionalLightChirho.position.set(5, 10, 7.5);
+                    sceneChirho.add(directionalLightChirho);
 
-                // --- Animation Loop ---
-                const clockChirho = new THREE.Clock();
-                const animateChirho = () => {
-                    const elapsedTimeChirho = clockChirho.getElapsedTime();
+                    // --- Particles ---
+                    const particlesGeometryChirho = new THREE.BufferGeometry();
+                    const particlesCntChirho = 5000;
+                    const posArrayChirho = new Float32Array(
+                        particlesCntChirho * 3,
+                    );
+                    for (
+                        let i_chirho = 0;
+                        i_chirho < particlesCntChirho * 3;
+                        i_chirho++
+                    ) {
+                        posArrayChirho[i_chirho] = (Math.random() - 0.5) * 200;
+                    }
+                    particlesGeometryChirho.setAttribute(
+                        "position",
+                        new THREE.BufferAttribute(posArrayChirho, 3),
+                    );
+                    const particlesMaterialChirho = new THREE.PointsMaterial({
+                        size: 0.085,
+                        color: 0xaaaaaa,
+                        blending: THREE.AdditiveBlending,
+                        transparent: true,
+                        opacity: 0.7,
+                    });
+                    const particleMeshChirho = new THREE.Points(
+                        particlesGeometryChirho,
+                        particlesMaterialChirho,
+                    );
+                    sceneChirho.add(particleMeshChirho);
 
-                    particleMeshChirho.rotation.y = elapsedTimeChirho * 0.05;
-                    particleMeshChirho.rotation.x = elapsedTimeChirho * 0.02;
+                    // --- Box Wireframe Cross ---
+                    const mainCrossGroupChirho = new THREE.Group();
+                    const edgeThickness_chirho = 0.3;
+                    const verticalHeight_chirho = 25;
+                    const verticalWidth_chirho = 2;
+                    const horizontalWidth_chirho = 16;
+                    const horizontalHeight_chirho = 2;
+                    const crossDepth_chirho = 1.5;
+                    const horizontalYOffset_chirho = 5;
+                    const edgeMaterialChirho = new THREE.MeshStandardMaterial({
+                        color: 0x00aaff,
+                        roughness: 0.5,
+                        metalness: 0.1,
+                    });
+                    function createBoxOutlineChirho(
+                        width,
+                        height,
+                        depth,
+                        thickness,
+                    ) {
+                        /* ... box outline function ... */
+                        const group = new THREE.Group();
+                        const w = width / 2;
+                        const h = height / 2;
+                        const d = depth / 2;
+                        const createEdge = (
+                            w_geom,
+                            h_geom,
+                            d_geom,
+                            x_pos,
+                            y_pos,
+                            z_pos,
+                        ) => {
+                            const geometry = new THREE.BoxGeometry(
+                                w_geom,
+                                h_geom,
+                                d_geom,
+                            );
+                            const mesh = new THREE.Mesh(
+                                geometry,
+                                edgeMaterialChirho,
+                            );
+                            mesh.position.set(x_pos, y_pos, z_pos);
+                            group.add(mesh);
+                        };
+                        createEdge(thickness, height, thickness, -w, 0, d);
+                        createEdge(thickness, height, thickness, w, 0, d);
+                        createEdge(thickness, height, thickness, -w, 0, -d);
+                        createEdge(thickness, height, thickness, w, 0, -d);
+                        createEdge(width, thickness, thickness, 0, h, d);
+                        createEdge(width, thickness, thickness, 0, -h, d);
+                        createEdge(width, thickness, thickness, 0, h, -d);
+                        createEdge(width, thickness, thickness, 0, -h, -d);
+                        createEdge(thickness, thickness, depth, -w, h, 0);
+                        createEdge(thickness, thickness, depth, w, h, 0);
+                        createEdge(thickness, thickness, depth, -w, -h, 0);
+                        createEdge(thickness, thickness, depth, w, -h, 0);
+                        return group;
+                    }
+                    const verticalOutlineGroupChirho = createBoxOutlineChirho(
+                        verticalWidth_chirho,
+                        verticalHeight_chirho,
+                        crossDepth_chirho,
+                        edgeThickness_chirho,
+                    );
+                    const horizontalOutlineGroupChirho = createBoxOutlineChirho(
+                        horizontalWidth_chirho,
+                        horizontalHeight_chirho,
+                        crossDepth_chirho,
+                        edgeThickness_chirho,
+                    );
+                    horizontalOutlineGroupChirho.position.y =
+                        horizontalYOffset_chirho;
+                    mainCrossGroupChirho.add(verticalOutlineGroupChirho);
+                    mainCrossGroupChirho.add(horizontalOutlineGroupChirho);
+                    mainCrossGroupChirho.position.set(0, 0, 10);
+                    sceneChirho.add(mainCrossGroupChirho);
 
-                    // Rotate the main cross group
-                    mainCrossGroupChirho.rotation.x = elapsedTimeChirho * 0.2;
-                    mainCrossGroupChirho.rotation.y = elapsedTimeChirho * 0.3;
-                    mainCrossGroupChirho.rotation.z = elapsedTimeChirho * 0.1;
-
-                    cameraChirho.position.x +=
-                        (mouseXChirho * 5 - cameraChirho.position.x) * 0.02;
-                    cameraChirho.position.y +=
-                        (-mouseYChirho * 5 - cameraChirho.position.y) * 0.02;
-                    cameraChirho.lookAt(sceneChirho.position);
-
-                    rendererChirho.render(sceneChirho, cameraChirho);
-                    window.requestAnimationFrame(animateChirho);
-                };
-
-                window.onload = function () {
+                    // --- Event Listeners & Animation Loop ---
+                    window.addEventListener("resize", () => {
+                        /* ... resize handler ... */
+                        cameraChirho.aspect =
+                            window.innerWidth / window.innerHeight;
+                        cameraChirho.updateProjectionMatrix();
+                        rendererChirho.setSize(
+                            window.innerWidth,
+                            window.innerHeight,
+                        );
+                        rendererChirho.setPixelRatio(
+                            Math.min(window.devicePixelRatio, 2),
+                        );
+                    });
+                    let mouseXChirho = 0;
+                    let mouseYChirho = 0;
+                    document.addEventListener("mousemove", (eventChirho) => {
+                        /* ... mouse handler ... */
+                        mouseXChirho =
+                            (eventChirho.clientX / window.innerWidth) * 2 - 1;
+                        mouseYChirho =
+                            -(eventChirho.clientY / window.innerHeight) * 2 + 1;
+                    });
+                    const clockChirho = new THREE.Clock();
+                    const animateChirho = () => {
+                        /* ... animation loop ... */
+                        const elapsedTimeChirho = clockChirho.getElapsedTime();
+                        particleMeshChirho.rotation.y =
+                            elapsedTimeChirho * 0.05;
+                        particleMeshChirho.rotation.x =
+                            elapsedTimeChirho * 0.02;
+                        mainCrossGroupChirho.rotation.x =
+                            elapsedTimeChirho * 0.2;
+                        mainCrossGroupChirho.rotation.y =
+                            elapsedTimeChirho * 0.3;
+                        mainCrossGroupChirho.rotation.z =
+                            elapsedTimeChirho * 0.1;
+                        cameraChirho.position.x +=
+                            (mouseXChirho * 5 - cameraChirho.position.x) * 0.02;
+                        cameraChirho.position.y +=
+                            (-mouseYChirho * 5 - cameraChirho.position.y) *
+                            0.02;
+                        cameraChirho.lookAt(sceneChirho.position);
+                        rendererChirho.render(sceneChirho, cameraChirho);
+                        window.requestAnimationFrame(animateChirho);
+                    };
                     animateChirho();
-                };
-            } else {
-                console.error("Canvas element #bg-canvas_chirho not found.");
+                    console.log("WebGL1 Cross Effect Initialized.");
+                    return true; // Indicate success
+                } catch (error) {
+                    console.error(
+                        "Error initializing WebGL1 Cross effect:",
+                        error,
+                    );
+                    return false; // Indicate failure
+                }
             }
+
+            /**
+             * Initializes the static fallback effect (shows a static background).
+             */
+            function initStaticFallback_chirho() {
+                console.log("Using static fallback.");
+                const canvasElement =
+                    document.getElementById("bg-canvas_chirho");
+                const fallbackElement = document.getElementById(
+                    "hero-fallback-bg_chirho",
+                );
+                if (canvasElement) {
+                    canvasElement.style.display = "none";
+                }
+                if (fallbackElement) {
+                    fallbackElement.style.display = "block";
+                }
+            }
+
+            // --- Main Execution ---
+            document.addEventListener("DOMContentLoaded", () => {
+                const canvasElement =
+                    document.getElementById("bg-canvas_chirho");
+                if (!canvasElement) {
+                    console.error(
+                        "Canvas element #bg-canvas_chirho not found. Cannot initialize WebGL.",
+                    );
+                    initStaticFallback_chirho();
+                    return;
+                }
+
+                // Try WebGL2 first
+                const webgl2Context = canvasElement.getContext("webgl2");
+                if (webgl2Context) {
+                    const success = initRawWebGL2Effect_chirho(
+                        canvasElement,
+                        webgl2Context,
+                    ); // Try Raymarching
+                    if (!success) {
+                        // If Raw WebGL2 failed, try WebGL1 Cross effect
+                        console.log(
+                            "Raw WebGL2 effect failed, attempting WebGL1 fallback...",
+                        );
+                        const webgl1Context =
+                            canvasElement.getContext("webgl") ||
+                            canvasElement.getContext("experimental-webgl");
+                        if (webgl1Context) {
+                            const successFallback1 = initCrossEffect_chirho(
+                                canvasElement,
+                                webgl1Context,
+                            ); // Use Cross effect
+                            if (!successFallback1) initStaticFallback_chirho();
+                        } else {
+                            initStaticFallback_chirho();
+                        }
+                    }
+                } else {
+                    // WebGL2 not available, try WebGL1 Cross effect
+                    console.log(
+                        "WebGL2 not available, attempting WebGL1 fallback...",
+                    );
+                    const webgl1Context =
+                        canvasElement.getContext("webgl") ||
+                        canvasElement.getContext("experimental-webgl");
+                    if (webgl1Context) {
+                        console.log("WebGL1 context created");
+                        const successFallback1 = initCrossEffect_chirho(
+                            canvasElement,
+                            webgl1Context,
+                        ); // Use Cross effect
+                        if (!successFallback1) initStaticFallback_chirho();
+                    } else {
+                        // No WebGL support
+                        console.log("WebGL1 context not created");
+                        initStaticFallback_chirho();
+                    }
+                }
+            });
         </script>
     </body>
 </html>
